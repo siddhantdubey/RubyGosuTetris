@@ -1,7 +1,7 @@
 require "gosu"
 require_relative "grid"
 require_relative "square"
-require_relative "shape"
+require_relative "block"
 require_relative "matrix"
 
 class Tetris < Gosu::Window
@@ -9,14 +9,11 @@ class Tetris < Gosu::Window
   COLUMNS = 10 #the number of columns
   SIZE = 40 #the size of the squares
 
-
-  #a lot of the different game scene stuff was taken from our sector_five code in class
-
   def initialize
     super(COLUMNS * SIZE, ROWS * SIZE)#creates the window based on number of rows and columns
     @fall_interval = 500 #used to determine how fast blocks fall, starts slow gets quicker as player score increases
     @grid = Grid.new(ROWS, COLUMNS) #creates the grid
-    @current_shape = Shape.random(@grid) #makes the block to be placed
+    @current_shape = Block.random(@grid) #makes the block to be placed
     
     
     @playingtime = Gosu.milliseconds #used to keep track of how long the game has been going on and how fast the blocks fall
@@ -31,7 +28,7 @@ class Tetris < Gosu::Window
     @speed = 1 #this is used to use the fall() method so that the shapes fall towards the bottom
     @scene = :start #the current scene of the game, either start, game, or end. 
 
-    @title_font = Gosu::Font.new(self, Gosu::default_font_name, 40) #the font for the title
+    @title_font = Gosu::Font.new(self, Gosu::default_font_name, 40)
   end
 
   def draw
@@ -71,10 +68,6 @@ class Tetris < Gosu::Window
   end
 
   def update
-    @game_over = @grid.full_column?
-    if @game_over
-      @scene = :end
-    end
     case @scene
     #can only play the game while the scene is game, otherwise nothing is being moved and the grid is not being updated
     when :game
@@ -89,12 +82,12 @@ class Tetris < Gosu::Window
   end
 
   def step
-     #checks to see if the game is over by going through each column and seeing if the column is full or not
+    @game_over = @grid.full_column? #checks to see if the game is over by going through each column and seeing if the column is full or not
     if !@game_over #as long as the game is not over then continue to pick new blocks, land them, and delete filled rows
       if @current_shape.haslanded?
         @current_shape.land
         @grid.delete_filled_rows
-        @current_shape = Shape.random(@grid)
+        @current_shape = Block.random(@grid)
       else
         @current_shape.fall(@speed)
       end
