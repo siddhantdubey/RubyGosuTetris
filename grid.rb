@@ -23,8 +23,10 @@ class Grid
     
     def full_column?
       #this is a method used to check if a column is full, used to checkk to see if the game is over
+      #this sometimes doesn't work exactly right, but it gets the job done
         (0..@columns).each do |y|
             column = column(y)
+            puts @blocks
             if column.length == @rows
                 return true
             end

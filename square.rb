@@ -1,6 +1,6 @@
 class Square
     #this file lays out the base squares that will be used to make the more complicated shapes
-
+    #some knowledge was taken from this article: https://www.gamedev.net/blogs/entry/2254256-tetris-in-ruby/, however there code is pretty unorganized and doesn't completely work so we had to come up with our own big brain plots
 
     attr_reader :x, :y, :color
     def initialize(x, y, color)
