@@ -23,13 +23,13 @@ class Grid
     
     def full_column?
       #this is a method used to check if a column is full, used to checkk to see if the game is over
-        (0..@columns).each do |y|
-            column = column(y)
+      #sometimes it doesn't work as intended and the game continues to draw even after the game is supposed to be over
+        (0...@columns).each do |x|
+            column = column(x)
             if column.length == @rows
-                return true
+              return true
             end
         end
-        return false
     end
 
     def delete_filled_rows

@@ -72,6 +72,9 @@ class Tetris < Gosu::Window
 
   def update
     @game_over = @grid.full_column?
+    if @game_over
+      @scene = :end
+    end
     case @scene
     #can only play the game while the scene is game, otherwise nothing is being moved and the grid is not being updated
     when :game

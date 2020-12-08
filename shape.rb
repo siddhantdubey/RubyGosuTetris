@@ -18,13 +18,13 @@ class Shape
     new(blocks, grid) 
   end
 
-  def initialize(squares, grid)
-    @blocks = squares #the squares that make up the shape
+  def initialize(blocks, grid)
+    @blocks = blocks #the blocks that make up the shape
     @grid = grid #the grid the shape belongs to
   end
 
   def draw
-    @blocks.each(&:draw) #draws the block by drawing the squares that make up the shape
+    @blocks.each(&:draw) #draws the block by drawing the blocks that make up the shape
   end
 
   def fall(speed)
@@ -32,28 +32,28 @@ class Shape
   end
 
   def rotate
-    if @blocks[0].color == Gosu::Color::GRAY #the gray block won't rotate and will crash if the move_relative_to_matrices method is used, so preventing rotation is the solution. This doesn't affect gameplay because the gray block is only one square so rotating it wouldn't matter anyways.
+    if @blocks[0].color == Gosu::Color::GRAY #the gray block won't rotate and will crash if the move_relative_to_matrices method is used, so preventing rotation is the solution. This doesn't affect gameplay because the gray block is only one block so rotating it wouldn't matter anyways.
       puts "Can't rotate this block." #this will let the player know what's happening.
     else
       matrix = Matrix.new #creates a matrix for the shape to be placed in allowing for it to be rotated
-      @blocks.each { |square| square.place(matrix) } #adds the squares in the matrix
+      @blocks.each { |block| block.place(matrix) } #adds the blocks in the matrix
       matrix.trim #removes unnecessary bits of the matrix
-      rotated_matrix = matrix.rotate #creates the roated matrix to compare to so that the squares can be rotated
-      @blocks.each { |square| square.move_relative_to_matrices(matrix, rotated_matrix) } #this line actually rotates the entire shape by comparing the position of squares in the old matrix to the new rotated matrix
+      rotated = matrix.rotate #creates the roated matrix to compare to so that the blocks can be rotated
+      @blocks.each { |block| block.move_relative_to_matrices(matrix, rotated) } #this line actually rotates the entire shape by comparing the position of blocks in the old matrix to the new rotated matrix
     end    
   end
 
   def land
     #this handles the landing of the shapes
     if @blocks[0].color == Gosu::Color::GRAY #the bomb shape doesn't actually land, it just blows up (deletes) the column
-      @blocks.each{|square| @grid.explode(square)} #explodes the column the shape was placed in
+      @blocks.each{|block| @grid.explode(block)} #explodes the column the shape was placed in
     else
-      @blocks.each { |square| @grid.land(square) } #if the shape isn't a bomb, it just places it like in normal tetris
+      @blocks.each { |block| @grid.land(block) } #if the shape isn't a bomb, it just places it like in normal tetris
     end
   end
 
   def haslanded?
-    @blocks.any? { |square| square.haslanded?(@grid) } #checks to see if the shape has haslanded yet by checking to see if each square has haslanded
+    @blocks.any? { |block| block.haslanded?(@grid) } #checks to see if the shape has haslanded yet by checking to see if each block has haslanded
   end
 
   def move_right
@@ -68,11 +68,11 @@ class Shape
 
   def move(x: 0, y: 0)
     #moves the shapes
-    @blocks.each { |square| square.move(x: x, y: y) }
+    @blocks.each { |block| block.move(x: x, y: y) }
   end
 
   def blocked?(offset_x)
     #checks to see if the shape's area is blocked off
-    @blocks.any? { |square| square.blocked?(offset_x, @grid) }
+    @blocks.any? { |block| block.blocked?(offset_x, @grid) }
   end
 end
