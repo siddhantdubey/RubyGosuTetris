@@ -5,18 +5,18 @@ require_relative "block"
 require_relative "matrix"
 
 class Tetris < Gosu::Window
-  COLUMNS = 10 #the number of columns
   ROWS = 22 #the number of rows
-  SQUARE_SIZE = 40 #the size of the squares
+  COLUMNS = 10 #the number of columns
+  SIZE = 40 #the size of the squares
 
   def initialize
-    super(COLUMNS * SQUARE_SIZE, ROWS * SQUARE_SIZE)#creates the window based on number of rows and columns
+    super(COLUMNS * SIZE, ROWS * SIZE)#creates the window based on number of rows and columns
     @fall_interval = 500 #used to determine how fast blocks fall, starts slow gets quicker as player score increases
     @grid = Grid.new(ROWS, COLUMNS) #creates the grid
-    @active_block = Block.random(@grid) #makes the block to be placed
+    @current_shape = Block.random(@grid) #makes the block to be placed
     
     
-    @time = Gosu.milliseconds #used to keep track of how long the game has been going on and how fast the blocks fall
+    @playingtime = Gosu.milliseconds #used to keep track of how long the game has been going on and how fast the blocks fall
     @font = Gosu::Font.new(self, Gosu::default_font_name, 20) #font to draw most of the game's text
     @game_over = false #variable to store if the game is over or not
     
@@ -48,7 +48,7 @@ class Tetris < Gosu::Window
         
           Gosu.draw_rect(0, 0, width, height, Gosu::Color::BLACK) #draws background
           @font.draw("Score: "  + @grid.score.to_s, 0, 50, 1, 1.0, 1.0, Gosu::Color::WHITE) #draws score
-          @active_block.draw #draws shape to be placed
+          @current_shape.draw #draws shape to be placed
           @grid.draw #draws grid with shapes
   
       else
@@ -72,24 +72,24 @@ class Tetris < Gosu::Window
     #can only play the game while the scene is game, otherwise nothing is being moved and the grid is not being updated
     when :game
       if @grid.score >= 30 and @fall_interval > 100 
-        @fall_interval = 500 - (@grid.score - 30) #once the player gets a score of 30, the blocks speed up as score increases until the fall_interval is 100
+        @fall_interval = 500 - (@grid.score - 30)*10 #once the player gets a score of 30, the blocks speed up as score increases until the fall_interval is 100
       end
-      if Gosu.milliseconds - @time > @fall_interval
-        @time = Gosu.milliseconds #checking to make sure if it is time to place a block, if it is then move on to placing the blocks and handling game logic
+      if Gosu.milliseconds - @playingtime > @fall_interval
+        @playingtime = Gosu.milliseconds #checking to make sure if it is time to place a block, if it is then move on to placing the blocks and handling game logic
         step
       end
     end
   end
 
   def step
-    @game_over = @grid.column_full? #checks to see if the game is over by going through each column and seeing if the column is full or not
+    @game_over = @grid.full_column? #checks to see if the game is over by going through each column and seeing if the column is full or not
     if !@game_over #as long as the game is not over then continue to pick new blocks, land them, and delete filled rows
-      if @active_block.landed?
-        @active_block.land
+      if @current_shape.haslanded?
+        @current_shape.land
         @grid.delete_filled_rows
-        @active_block = Block.random(@grid)
+        @current_shape = Block.random(@grid)
       else
-        @active_block.fall(@speed)
+        @current_shape.fall(@speed)
       end
     else
       #if the game is over then change the scene to the ending scene
@@ -118,10 +118,10 @@ class Tetris < Gosu::Window
   def button_down_game(key)
     #event handling during the game scene
     case key
-      when Gosu::KbLeft then @active_block.move_left #moves block to the left
-      when Gosu::KbRight then @active_block.move_right #moves block to the right
-      when Gosu::KbDown then @active_block.fall(@speed) #makes the block fall down
-      when Gosu::KbUp then @active_block.rotate #rotates the shape
+      when Gosu::KbLeft then @current_shape.move_left #moves block to the left
+      when Gosu::KbRight then @current_shape.move_right #moves block to the right
+      when Gosu::KbDown then @current_shape.fall(@speed) #makes the block fall down
+      when Gosu::KbUp then @current_shape.rotate #rotates the shape
       when Gosu::KbQ then close #closes the game
     end
   end

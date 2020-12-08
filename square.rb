@@ -12,8 +12,8 @@ class Square
     def draw
       #the draw method for the square
       stroke = 1
-      Gosu.draw_rect(@x * Tetris::SQUARE_SIZE, @y * Tetris::SQUARE_SIZE, Tetris::SQUARE_SIZE, Tetris::SQUARE_SIZE, Gosu::Color::BLACK)
-      Gosu.draw_rect(@x * Tetris::SQUARE_SIZE + stroke, @y * Tetris::SQUARE_SIZE + stroke, Tetris::SQUARE_SIZE - 2 * stroke, Tetris::SQUARE_SIZE - 2 * stroke, @color)
+      Gosu.draw_rect(@x * Tetris::SIZE, @y * Tetris::SIZE, Tetris::SIZE, Tetris::SIZE, Gosu::Color::BLACK)
+      Gosu.draw_rect(@x * Tetris::SIZE + stroke, @y * Tetris::SIZE + stroke, Tetris::SIZE - 2 * stroke, Tetris::SIZE - 2 * stroke, @color)
     end
   
     def fall_towards(y)
@@ -44,9 +44,9 @@ class Square
       grid.blocked?(@x + offset_x, @y)
     end
   
-    def landed?(grid)
-      #checks to see if the block has been successfully placed in the grid and landed on top of either another square or the bottom of the grid
-      grid.landed?(@x, @y)
+    def haslanded?(grid)
+      #checks to see if the block has been successfully placed in the grid and haslanded on top of either another square or the bottom of the grid
+      grid.haslanded?(@x, @y)
     end
   
     def occupies?(x, y)
