@@ -1,4 +1,4 @@
-class Block
+class Shape
   #the shapes array details all the different block shapes that will be used in the game
   SHAPES = [
     [[[0, 0], [0, 1], [1, 0], [1, 1]], Gosu::Color::BLUE],
@@ -14,8 +14,8 @@ class Block
   def self.random(grid)
     #picks a random shape to use
     coordinates, color = SHAPES.sample
-    squares = coordinates.map { |x, y| Square.new(x, y, color) }
-    new(squares, grid) 
+    blocks = coordinates.map { |x, y| Square.new(x, y, color) }
+    new(blocks, grid) 
   end
 
   def initialize(squares, grid)
