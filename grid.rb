@@ -3,8 +3,8 @@ class Grid
     attr_reader :score, :blocks, :rows, :column
 
     def initialize(rows, columns)
-      @rows = rows #the number of rows in the grid
-      @columns = columns #the number of columns
+      @numrows = rows #the number of rows in the grid
+      @numcolumns = columns #the number of columns
       @blocks = [] #the array that contains all the squares in the grid
       @score = 0  #this will keep track of the player score throughout the game
     end
@@ -14,20 +14,20 @@ class Grid
     end
   
     def blocked?(x, y)
-      x < 0 || x >= @columns || occupied?(x, y) #checks to see if a certain part on the grid is already blocked out
+      x < 0 || x >= @numcolumns || occupied?(x, y) #checks to see if a certain part on the grid is already blocked out
     end
   
     def haslanded?(x, y)
-      y >= @rows - 1 || occupied?(x, y + 1) #checks to see if a square has haslanded yet or not
+      y >= @numrows - 1 || occupied?(x, y + 1) #checks to see if a square has haslanded yet or not
     end
     
     def full_column?
       #this is a method used to check if a column is full, used to checkk to see if the game is over
       #this sometimes doesn't work exactly right, but it gets the job done
-        (0..@columns).each do |y|
+        (0..@numcolumns).each do |y|
             column = column(y)
-            puts @blocks
-            if column.length == @rows
+            # puts @blocks #this line was used for debugging
+            if column.length == @numrows
                 return true
             end
         end
@@ -36,9 +36,9 @@ class Grid
 
     def delete_filled_rows
       #this is used to delete a completed row and then add to the score of the person playing the game, this will be run each step in the game ruby file
-      (0...@rows).each do |y|
+      (0...@numrows).each do |y|
         row = row(y)
-        if row.length == @columns
+        if row.length == @numcolumns
           destroy(row)
           drop(y)
           @score += 10
@@ -68,7 +68,7 @@ class Grid
     end
 
     def drop(y)
-      #this is what allows for the squares to be dropped 
+      #this is what allows for the squares to be dropped from their current position after rows have been deleted
       @blocks.each { |block| block.fall_towards(y) }
     end
   
